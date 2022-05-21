@@ -7,7 +7,7 @@ app.use(cors())
 app.use(express.json())
 
 
-app.get('/', (req, res) => {
+app.get('https://motor-parts-263.herokuapp.com/', (req, res) => {
     res.send('Welcome! Motor Parts Manufacturing Website')
 })
 
