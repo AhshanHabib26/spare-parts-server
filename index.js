@@ -25,6 +25,7 @@ async function motoRun(){
         await client.connect()
 
         const productCollection = client.db('MotoCollection').collection('products')
+        const userCollection = client.db('MotoCollection').collection('user')
 
         app.get("/product", async (req, res) =>{
             const query = {}
@@ -40,6 +41,13 @@ async function motoRun(){
           const result = await productCollection.findOne(query)
           res.send(result);
         });
+
+        app.post('/user' , async(req, res) =>{
+          const data = req.body
+          const query = await userCollection.insertOne(data)
+          res.send(query)
+
+        })
 
         
 
