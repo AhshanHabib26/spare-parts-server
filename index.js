@@ -24,21 +24,21 @@ async function motoRun(){
 
         const productCollection = client.db('MotoCollection').collection('products')
 
-        app.get('/product', async (req, res) =>{
+        app.get("/product", async (req, res) =>{
             const query = {}
             const data = productCollection.find(query)
             const result = await data.toArray()
             res.send(result)
         })
 
-        console.log('Connect')
+        
 
     }
     finally{
 
     }
 }
-motoRun()
+motoRun().catch(console.dir())
 
 
 app.get("/", (req, res) => {
