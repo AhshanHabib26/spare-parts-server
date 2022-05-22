@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
@@ -26,6 +27,7 @@ async function motoRun(){
 
         const productCollection = client.db('MotoCollection').collection('products')
         const userCollection = client.db('MotoCollection').collection('user')
+        const productsCollection = client.db('MotoCollection').collection('userproducts')
 
         app.get("/product", async (req, res) =>{
             const query = {}
@@ -46,7 +48,12 @@ async function motoRun(){
           const data = req.body
           const query = await userCollection.insertOne(data)
           res.send(query)
+        })
 
+        app.post('/userproducts' , async(req, res) =>{
+          const data = req.body
+          const query = await productsCollection.insertOne(data)
+          res.send(query)
         })
 
         
