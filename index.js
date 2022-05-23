@@ -3,6 +3,7 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -45,6 +46,9 @@ async function motoRun() {
     const productsCollection = client
       .db("MotoCollection")
       .collection("userproducts");
+      const paymentCollection = client
+      .db("MotoCollection")
+      .collection("userPayment");
 
     app.get("/product", async (req, res) => {
       const query = {};
@@ -52,6 +56,20 @@ async function motoRun() {
       const result = await data.toArray();
       res.send(result);
     });
+
+
+    app.post('/create-payment-intent', verifyJWT, async(req, res) =>{
+      const product = req.body;
+      const price = product.TotalAmount;
+      const amount = price*100;
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount : amount,
+        currency: 'usd',
+        payment_method_types:['card']
+      });
+      res.send({clientSecret: paymentIntent.client_secret})
+    });
+
 
     app.get("/product/:id", async (req, res) => {
       const id = req.params.id;
@@ -118,6 +136,30 @@ async function motoRun() {
       res.send(query);
     });
 
+    app.get("/userproducts/:id", async(req, res) =>{
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productsCollection.findOne(query);
+      res.send(result);
+    })
+
+
+    app.patch("/userproducts/:id", async(req, res) =>{
+      const id = req.params.id;
+      const data = req.body
+      const query = { _id: ObjectId(id) };
+      const updateDoc = {
+        $set: { 
+          paid: true,
+          transactionId: data.transaction
+        },
+      };
+      const updateResult = await productsCollection.updateOne( query, updateDoc);
+      const result = await paymentCollection.insertOne(data)
+      res.send(result);
+    })
+
+  
     app.get("/userproducts", verifyJWT, async (req, res) => {
       const email = req.query.email;
       const decodeEmail = req.decoded.Email;
