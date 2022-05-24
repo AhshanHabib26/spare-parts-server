@@ -46,9 +46,19 @@ async function motoRun() {
     const productsCollection = client
       .db("MotoCollection")
       .collection("userproducts");
-      const paymentCollection = client
+   const paymentCollection = client
       .db("MotoCollection")
       .collection("userPayment");
+   const reviewCollection = client
+      .db("MotoCollection")
+      .collection("reviews");
+
+
+      app.post('/review', async(req, res) =>{
+        const data = req.body
+        const result = await reviewCollection.insertOne(data)
+        res.send(result)
+      })
 
     app.get("/product", async (req, res) => {
       const query = {};
