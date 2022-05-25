@@ -68,6 +68,23 @@ async function motoRun() {
         res.send(result)
       })
 
+      
+
+      // app.put("/userInfo/:id", async (req, res) => {
+      //   const id = req.params.id;
+      //   const updatedItem = req.body;
+      //   const itemFilter = { _id: ObjectId(id) };
+      //   const options = { upsert: true };
+      //   const updatedDoc = { $set: updatedItem };
+  
+      //   const result = await carHouseCollection.updateOne(
+      //     itemFilter,
+      //     updatedDoc,
+      //     options
+      //   );
+      //   res.send(result);
+      // });
+
       app.post('/quote', async(req, res) =>{
         const data = req.body
         const result = await quoteCollection.insertOne(data)
