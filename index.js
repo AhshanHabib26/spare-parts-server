@@ -55,7 +55,18 @@ async function motoRun() {
       const quoteCollection = client
       .db("MotoCollection")
       .collection("quoteOrder");
+      const userInfoCollection = client
+      .db("MotoCollection")
+      .collection("userInfo");
 
+
+      
+
+      app.post('/userInfo', async(req, res) =>{
+        const data = req.body
+        const result = await userInfoCollection.insertOne(data)
+        res.send(result)
+      })
 
       app.post('/quote', async(req, res) =>{
         const data = req.body
@@ -176,6 +187,13 @@ async function motoRun() {
       const result = await productsCollection.findOne(query);
       res.send(result);
     })
+
+      app.delete("/userproducts/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productsCollection.deleteOne(query);
+      res.send(result);
+    });
 
 
     app.patch("/userproducts/:id", async(req, res) =>{
