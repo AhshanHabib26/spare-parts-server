@@ -58,9 +58,15 @@ async function motoRun() {
       const userInfoCollection = client
       .db("MotoCollection")
       .collection("userInfo");
+      const blogCollection = client
+      .db("MotoCollection")
+      .collection("blogPost");
 
 
-      
+      app.get('/blogPost', async (req, res) =>{
+        const dataPost = await blogCollection.find().toArray()
+        res.send(dataPost)
+      })
 
       app.post('/userInfo', async(req, res) =>{
         const data = req.body
@@ -111,6 +117,19 @@ async function motoRun() {
       const query = {};
       const data = productCollection.find(query);
       const result = await data.toArray();
+      res.send(result);
+    });
+
+    app.post("/product", async (req, res) => {
+      const query = req.body;
+      const data = productCollection.insertOne(query)
+      res.send(data);
+    });
+
+    app.delete("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.deleteOne(query);
       res.send(result);
     });
 
