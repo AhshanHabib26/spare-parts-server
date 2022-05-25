@@ -52,12 +52,29 @@ async function motoRun() {
    const reviewCollection = client
       .db("MotoCollection")
       .collection("reviews");
+      const quoteCollection = client
+      .db("MotoCollection")
+      .collection("quoteOrder");
 
+
+      app.post('/quote', async(req, res) =>{
+        const data = req.body
+        const result = await quoteCollection.insertOne(data)
+        res.send(result)
+      })
 
       app.post('/review', async(req, res) =>{
         const data = req.body
         const result = await reviewCollection.insertOne(data)
         res.send(result)
+      })
+
+      app.get('/review', verifyJWT, async(req, res) =>{
+        const query = {};
+        const data = reviewCollection.find(query);
+        const result = await data.toArray();
+        res.send(result);
+        
       })
 
     app.get("/product", async (req, res) => {
