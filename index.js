@@ -68,22 +68,24 @@ async function motoRun() {
         res.send(result)
       })
 
-      
+      app.put("/userInfo/:email", async (req, res) => {
+        const email = req.params.email;
+        const user = req.body;
+        const filter = { Email: email };
+        const options = { upsert: true };
+        const updateDoc = {
+          $set: user,
+        };
+        const result = await userInfoCollection.updateOne(filter, updateDoc, options);
+        res.send(result);
+      });
 
-      // app.put("/userInfo/:id", async (req, res) => {
-      //   const id = req.params.id;
-      //   const updatedItem = req.body;
-      //   const itemFilter = { _id: ObjectId(id) };
-      //   const options = { upsert: true };
-      //   const updatedDoc = { $set: updatedItem };
-  
-      //   const result = await carHouseCollection.updateOne(
-      //     itemFilter,
-      //     updatedDoc,
-      //     options
-      //   );
-      //   res.send(result);
-      // });
+      app.get('/userInfo/:email', async(req, res) =>{
+        const email = req.params.email;
+        const user = await userInfoCollection.findOne({Email: email})
+        res.send(user)
+      })
+
 
       app.post('/quote', async(req, res) =>{
         const data = req.body
