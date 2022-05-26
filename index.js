@@ -213,25 +213,25 @@ async function motoRun() {
       res.send({ admin: userAdmin });
     });
 
-    app.post("/userproducts", verifyJWT, async (req, res) => {
+    app.post("/userproducts", async (req, res) => {
       const data = req.body;
       const query = await productsCollection.insertOne(data);
       res.send(query);
     });
 
-    app.get( "/userproducts", verifyJWT, async (req, res) =>{
+    app.get( "/userproducts", async (req, res) =>{
       const data = await productsCollection.find().toArray()
       res.send(data)
     })
 
-    app.get("/userproducts/:id", verifyJWT, async(req, res) =>{
+    app.get("/userproducts/:id", async(req, res) =>{
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await productsCollection.findOne(query);
       res.send(result);
     })
 
-      app.delete("/userproducts/:id", verifyJWT, async (req, res) => {
+      app.delete("/userproducts/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await productsCollection.deleteOne(query);
