@@ -35,6 +35,8 @@ function verifyJWT(req, res, next) {
   });
 }
 
+// Main Funtion Start Here
+
 async function motoRun() {
   try {
     await client.connect();
@@ -63,10 +65,13 @@ async function motoRun() {
       .collection("blogPost");
 
 
+      // Blog Post API
       app.get('/blogPost', async (req, res) =>{
         const dataPost = await blogCollection.find().toArray()
         res.send(dataPost)
       })
+
+      // User Info Collection API Start Here
 
       app.post('/userInfo', async(req, res) =>{
         const data = req.body
@@ -93,11 +98,16 @@ async function motoRun() {
       })
 
 
+      // Main Page Input API
+
       app.post('/quote', async(req, res) =>{
         const data = req.body
         const result = await quoteCollection.insertOne(data)
         res.send(result)
       })
+
+
+      // Customer Review Collect API
 
       app.post('/review', async(req, res) =>{
         const data = req.body
@@ -112,6 +122,9 @@ async function motoRun() {
         res.send(result);
         
       })
+
+
+    // Main Product API  
 
     app.get("/product", async (req, res) => {
       const query = {};
@@ -133,6 +146,15 @@ async function motoRun() {
       res.send(result);
     });
 
+    app.get("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
+
+    // Payment GetWay API
+
 
     app.post('/create-payment-intent', verifyJWT, async(req, res) =>{
       const product = req.body;
@@ -147,12 +169,7 @@ async function motoRun() {
     });
 
 
-    app.get("/product/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const result = await productCollection.findOne(query);
-      res.send(result);
-    });
+    // USer And Admin API
 
     app.put("/user/:email", async (req, res) => {
       const email = req.params.email;
@@ -212,6 +229,8 @@ async function motoRun() {
       const userAdmin = user.role === "admin";
       res.send({ admin: userAdmin });
     });
+
+    // User Products Collection API
 
     app.post("/userproducts", async (req, res) => {
       const data = req.body;
